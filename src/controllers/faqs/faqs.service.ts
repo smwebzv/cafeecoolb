@@ -19,8 +19,7 @@ export class FaqsService {
     private drinkRepository: Repository<Drink>
   ) {}
 
-  async create(createFaqDto: CreateFaqDto) {
-    const id = createFaqDto.userId;
+  async create(createFaqDto: CreateFaqDto, id: number) {
     const user = await this.userRepository.findOneOrFail({ where: { id: id } });
     createFaqDto.dailyList.map(async (item) => {
       await this.drinkRepository

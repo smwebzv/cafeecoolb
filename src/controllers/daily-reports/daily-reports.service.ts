@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { of } from 'rxjs';
 import { Repository } from 'typeorm';
 import { Drink } from '../drinks/entities/drink.entity';
 import { User } from '../users/entities/user.entity';
@@ -18,8 +19,7 @@ export class DailyReportsService {
     private drinkRepository: Repository<Drink>,
   ) {}
 
-  async create(createDailyReportDto: CreateDailyReportDto) {
-    const id = createDailyReportDto.userId;
+  async create(createDailyReportDto: CreateDailyReportDto, id: number) {
     const user = await this.userRepository.findOneOrFail({ where: { id: id } });
 
     createDailyReportDto.dailyList.map(async (item) => {
