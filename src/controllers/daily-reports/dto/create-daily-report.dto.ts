@@ -1,15 +1,12 @@
 import { IsNotEmpty } from "class-validator";
 
-export interface IDailyReport{
-    drinkId: number,
-    consumption: number,
-    remaind: number
+export class IDailyReport{
+    drinkId: number;
+    consumption: number;
+    remaind: number;
 }
 
 export class CreateDailyReportDto {
-    @IsNotEmpty()
-    userId: number;
-
     @IsNotEmpty()
     shift: number;
 

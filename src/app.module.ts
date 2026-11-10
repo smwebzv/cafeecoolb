@@ -10,6 +10,7 @@ import { DailyReport } from './controllers/daily-reports/entities/daily-report.e
 import { DailyReportsModule } from './controllers/daily-reports/daily-reports.module';
 import { FaqsModule } from './controllers/faqs/faqs.module';
 import { Faq } from './controllers/faqs/entities/faq.entity';
+import { AuthModule } from './controllers/auth/auth.module';
 
 @Module({
   imports: [
@@ -17,16 +18,17 @@ import { Faq } from './controllers/faqs/entities/faq.entity';
     DrinksModule,
     DailyReportsModule,
     FaqsModule,
+    AuthModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
+      host: '18.193.130.171',
       port: 3306,
       username: 'root',
-      password: '',
+      password: 'abcdABCD1234',
       database: 'cafecool',
       entities: [User, Drink, DailyReport, Faq],
       synchronize: true,
-    }),
+    })
   ],
   controllers: [AppController],
   providers: [AppService],

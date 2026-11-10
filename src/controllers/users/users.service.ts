@@ -4,24 +4,28 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import * as bcrypt from 'bcrypt';
 
+const saltOrRounds = 10;
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private homeRepository: Repository<User>,
+    private userRepository: Repository<User>,
   ) {}
 
-  create(createUserDto: CreateUserDto) {
-    return this.homeRepository.insert(createUserDto);
+  async create(createUserDto: CreateUserDto) {
+    const hash_password = await bcrypt.hash(createUserDto.password, saltOrRounds);
+    createUserDto.password = hash_password;
+    return this.userRepository.insert(createUserDto);
   }
 
   findAll(): Promise<User[]> {
-    return this.homeRepository.find();
+    return this.userRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  findOne(username: string) {
+    return this.userRepository.findOneOrFail({ where: { username: username } });
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
