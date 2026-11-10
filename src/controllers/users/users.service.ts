@@ -24,8 +24,8 @@ export class UsersService {
     return this.userRepository.find();
   }
 
-  findOne(username: string) {
-    return this.userRepository.findOneOrFail({ where: { username: username } });
+  findOne(username: string): Promise<User | null> {
+    return this.userRepository.findOne({ where: { username } });
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

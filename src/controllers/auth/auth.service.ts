@@ -1,8 +1,6 @@
 import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 
@@ -11,8 +9,6 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
   ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
@@ -29,11 +25,13 @@ export class AuthService {
     return null;
   }
 
-  async login(user: any) {
+  async login(user: User) {
     const payload = { username: user.username, sub: user.id };
+    const { password: _, ...loggedUser } = user;
 
     return {
       access_token: this.jwtService.sign(payload),
+      loggedUser,
     };
   }
 }

@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './controllers/users/entities/user.entity';
 import { UsersModule } from './controllers/users/users.module';
 import { DrinksModule } from './controllers/drinks/drinks.module';
@@ -14,21 +15,26 @@ import { AuthModule } from './controllers/auth/auth.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     UsersModule,
     DrinksModule,
     DailyReportsModule,
     FaqsModule,
     AuthModule,
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: '18.193.130.171',
-      port: 3306,
-      username: 'root',
-      password: 'abcdABCD1234',
-      database: 'cafecool',
-      entities: [User, Drink, DailyReport, Faq],
-      synchronize: true,
-    })
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        type: 'mysql',
+        host: config.get<string>('DB_HOST', 'localhost'),
+        port: config.get<number>('DB_PORT', 3306),
+        username: config.get<string>('DB_USERNAME', 'root'),
+        password: config.get<string>('DB_PASSWORD', ''),
+        database: config.get<string>('DB_DATABASE', 'cafecool'),
+        entities: [User, Drink, DailyReport, Faq],
+        synchronize: config.get<string>('TYPEORM_SYNC', 'true') === 'true',
+      }),
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
